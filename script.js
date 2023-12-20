@@ -51,20 +51,58 @@ class Character {
         }
 }
 
-const robin = new Character("Robin");
-robin.inventory = ["sword", "potion", "artifact"];
-robin.companion = new Character("Leo");
-robin.companion.type = "Cat";
-robin.companion.companion = new Character("Frank");
-robin.companion.companion.type = "Flea";
-robin.companion.companion.inventory = ["small hat", "sunglasses"];
+// const robin = new Character("Robin");
+// robin.inventory = ["sword", "potion", "artifact"];
+// robin.companion = new Character("Leo");
+// robin.companion.type = "Cat";
+// robin.companion.companion = new Character("Frank");
+// robin.companion.companion.type = "Flea";
+// robin.companion.companion.inventory = ["small hat", "sunglasses"];
 
-robin.roll();
-robin.roll(10);
-robin.roll(100);
+// robin.roll();
+// robin.roll(10);
+// robin.roll(100);
 
-robin.companion.roll();
-robin.companion.companion.roll();
+// robin.companion.roll();
+// robin.companion.companion.roll();
+
+
 
 ////////////////////////////////
 // Part 3: Class Features
+
+class Adventurer extends Character {
+    constructor(name, role) {
+        super(name);
+        this.role = role;
+        this.inventory.push('bedroll', '50 gold coins');
+    }
+    scout() {
+        console.log(`${this.name} is scouting ahead...`);
+        super.roll();
+    }
+}
+
+class Companion extends Character {
+    constructor(name, type) {
+        super(name);
+        this.type = type;
+        this.inventory.push("small hat", "sunglasses");
+    }
+    scout() {
+        console.log(`${this.name} is scouting ahead...`);
+        super.roll();
+    }
+}
+
+const robin = new Adventurer('Robin','Fighter');
+robin.inventory.push("sword", "potion", "artifact");
+
+const leo = new Companion('Leo', 'Cat');
+robin.companion = leo;
+
+const frank = new Companion('Frank', 'Flea');
+leo.companion = frank;
+
+console.log(robin);
+console.log(robin.companion);
