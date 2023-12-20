@@ -45,9 +45,13 @@ class Character {
         this.inventory = [];
     }
 
+    static MAX_HEALTH = 100;
+    static ROLES = ['Fighter', 'Healer', 'Wizard'];
+
     roll (mod = 0) {
         const result = Math.floor(Math.random() * 20) + 1 + mod;
         console.log(`${this.name} rolled a ${result}.`)
+        return result;
         }
 }
 
@@ -74,12 +78,50 @@ class Character {
 class Adventurer extends Character {
     constructor(name, role) {
         super(name);
-        this.role = role;
+        if (Character.ROLES.includes(role)){
+            this.role = role;
+        }
+        else {
+            throw new Error('This character role is not valid.')
+        }
         this.inventory.push('bedroll', '50 gold coins');
+        this.MAX_HEALTH = this.constructor.MAX_HEALTH;
     }
     scout() {
         console.log(`${this.name} is scouting ahead...`);
         super.roll();
+    }
+
+    duel(opponent) {
+        console.log('Duel starts.')
+        console.log(this.MAX_HEALTH);
+        console.log(opponent.MAX_HEALTH);
+
+        while (this.MAX_HEALTH > 50 && opponent.MAX_HEALTH > 50) {
+            let charRoll = super.roll();
+            let opRoll = opponent.roll();
+
+            if (charRoll < opRoll) {
+                this.MAX_HEALTH--;
+                console.log(`${this.name} lost to ${opponent.name}. ${this.name} has ${this.MAX_HEALTH} left. ${opponent.name} has ${opponent.MAX_HEALTH} left.`)
+            }
+            else if (charRoll > opRoll) {
+                opponent.MAX_HEALTH--;
+                console.log(`${this.name} won against ${opponent.name}. ${this.name} has ${this.MAX_HEALTH} left. ${opponent.name} has ${opponent.MAX_HEALTH} left.`)
+            }
+            else {
+                console.log(`${this.name} tied to ${opponent.name}. ${this.name} has ${this.MAX_HEALTH} left. ${opponent.name} has ${opponent.MAX_HEALTH} left.`)
+                this.MAX_HEALTH--;
+                opponent.MAX_HEALTH--;
+            }
+        }
+
+        if (this.MAX_HEALTH === opponent.MAX_HEALTH) {
+            console.log('It was a tie.')
+        }
+        else {
+            console.log(`The winner of this duel is ${this.MAX_HEALTH > opponent.MAX_HEALTH? this.name : opponent.name}`);
+        }
     }
 }
 
@@ -106,3 +148,50 @@ leo.companion = frank;
 
 console.log(robin);
 console.log(robin.companion);
+
+
+////////////////////////////////////////
+// Part 4: Class Uniforms
+const hood = new Adventurer('Hood', 'Healer');
+console.log(hood);
+
+
+
+//////////////////////////////////////
+// Part 5: Gather your Party
+
+class AdventurerFactory {  
+    constructor (role) {
+        this.role = role;
+        this.adventurers = [];
+    }
+    generate (name) {
+        const newAdventurer = new Adventurer(name, this.role);
+        this.adventurers.push(newAdventurer);
+    }
+    findByIndex (index) {
+        return this.adventurers[index];
+    }
+    findByName (name) {
+        return this.adventurers.find((a) => a.name === name);
+    }
+}
+
+const healers = new AdventurerFactory("Healer");
+const robinHealer = healers.generate("Robin");
+const hoodHealer = healers.generate('Hood');
+const johnHealer = healers.generate('John');
+
+console.log(healers);
+
+
+////////////////////////////////////////
+// Part 6: Developing Skills
+
+const anne = new Adventurer('Anne', 'Fighter');
+const betty = new Adventurer('Betty', 'Wizard');
+
+console.log(anne);
+console.log(betty);
+
+anne.duel(betty);
